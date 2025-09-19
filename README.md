@@ -1,17 +1,17 @@
-#The Project
+#The Project  
 Our REST API is an Atendance Management System with the following resources : Users, Employees, and Attendance. 
 
-#The Team
-Glaines Malinao - Project Manager. 
-Edjay Blasquino - System Analyst.
-Rejie Recolito  - Sofware Developer.
-Michelle Pura   - Technical Writer.
+#The Team  
+Glaines Malinao - Project Manager.   
+Edjay Blasquino - System Analyst.  
+Rejie Recolito  - Sofware Developer.  
+Michelle Pura   - Technical Writer.  
 
-#The Progress :
-✅ Intialized Repository with Git Version Control.
-✅ Created the Database, Migrations, and Models.
-✅ Created the Contoller for User Resource.
-✅ Successfuly Tested POST Method using Postman for Users Resource (see folder POSTMAN TESTING containing screenshots of successfull POST request ).
+#The Progress :  
+✅ Intialized Repository with Git Version Control  
+✅ Created the Database, Migrations, and Models  
+✅ Created the Contoller for User Resource  
+✅ Successfuly Tested POST Method using Postman for Users Resource (see folder POSTMAN TESTING containing screenshots of successfull POST request )  
 
 
 
