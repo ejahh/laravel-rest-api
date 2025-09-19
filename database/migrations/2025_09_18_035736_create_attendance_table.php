@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -14,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('attendance', function (Blueprint $table) {
             $table->id();
-             $table->time('time_in_AM');
+            $table->time('time_in_AM');
             $table->time('time_out_AM');
             $table->time('time_in_PM');
             $table->time('time_out_PM');
