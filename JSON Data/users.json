@@ -54,5 +54,16 @@
     "phone_number": "09145990123",
     "profile_photo": null,
     "user_type": "admin"
+    },
+  {
+    "first_name": "Selena",
+    "middle_name": "F",
+    "last_name": "Gerero",
+    "user_name": "selena",
+    "email": "selenagerero@gmail.com",
+    "password": "selena123",
+    "phone_number": "09149870123",
+    "profile_photo": null,
+    "user_type": "user"
     }
 ]
