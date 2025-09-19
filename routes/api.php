@@ -6,6 +6,7 @@ use App\Http\Controllers\AttendanceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+Route::get('users/multiple', [UserController::class, 'multiple']);
 Route::apiResource('users', UserController::class);
 Route::apiResource('employees', EmployeeController::class);
 Route::apiResource('attendance', AttendanceController::class);
