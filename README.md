@@ -10,8 +10,10 @@ Michelle Pura   - Technical Writer.
 #The Progress :  
 ✅ Intialized Repository with Git Version Control  
 ✅ Created the Database, Migrations, and Models  
-✅ Created the Contoller for User Resource  
-✅ Successfuly Tested POST Method using Postman for Users Resource (see folder POSTMAN TESTING containing screenshots of successfull POST request )  
+✅ Created the Contoller for the 3 Resourced 
+✅ Successfuly Tested POST Method using Postman for Users Resource  
+✅ Successfuly Tested GET Method using Postman for Users Resource  
+(Navigate to POSTMAN TESTING folder to view screenshots of successfull CRUD Endpoints requests and responses)  
 
 
 
