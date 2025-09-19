@@ -76,4 +76,18 @@ class UserController extends Controller
         $user->delete();
         return response()->json(['message' => 'User deleted']);
     }
+
+    /**
+     * Display a listing of the resources by multiple IDs.
+     */
+    public function multiple(Request $request)
+    {
+        $ids = $request->query('ids');
+        if (!$ids) {
+            return response()->json(['error' => 'No IDs provided'], 400);
+        }
+        $idArray = array_map('intval', explode(',', $ids));
+        $users = User::whereIn('id', $idArray)->get();
+        return response()->json($users);
+    }
 }
