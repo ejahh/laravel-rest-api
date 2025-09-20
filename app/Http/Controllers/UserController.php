@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -20,7 +21,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'middle_name' => 'nullable',
             'last_name' => 'required',
@@ -31,8 +32,22 @@ class UserController extends Controller
             'profile_photo' => 'nullable',
             'user_type' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'A required field is missing or invalid',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
         $validated['password'] = bcrypt($validated['password']);
-        return User::create($validated);
+        $user = User::create($validated);
+
+        return response()->json([
+            'message' => 'User added successfully',
+            'user' => $user
+        ], 201);
     }
 
     /**
@@ -40,7 +55,15 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        return User::findOrFail($id);
+        try {
+            $user = User::findOrFail($id);
+            return response()->json($user);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'User not found',
+                'error' => 'No user exists with the provided ID.'
+            ], 404);
+        }
     }
 
     /**
@@ -49,7 +72,7 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $user = User::findOrFail($id);
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'first_name' => 'sometimes|required',
             'middle_name' => 'nullable',
             'last_name' => 'sometimes|required',
@@ -58,13 +81,94 @@ class UserController extends Controller
             'password' => 'sometimes|nullable|min:8',
             'phone_number' => 'nullable',
             'profile_photo' => 'nullable',
-            'user_type' => 'required',
+            'user_type' => 'sometimes|required',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'A required field is missing or invalid',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
         if (isset($validated['password'])) {
             $validated['password'] = bcrypt($validated['password']);
         }
         $user->update($validated);
-        return $user;
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user' => $user
+        ], 200);
+    }
+
+    /**
+     * Bulk update multiple users.
+     * Accepts an array of updates: [{id: 1, field1: value, ...}, ...]
+     */
+    public function updateMultiple(Request $request)
+    {
+        $updates = $request->input('updates');
+        if (!is_array($updates) || empty($updates)) {
+            return response()->json([
+                'message' => 'No updates provided',
+                'errors' => ['updates' => ['The updates array is required.']]
+            ], 422);
+        }
+
+        $results = [];
+        foreach ($updates as $update) {
+            if (!isset($update['id'])) {
+                $results[] = [
+                    'id' => null,
+                    'status' => 'failed',
+                    'errors' => ['id' => ['User ID is required.']]
+                ];
+                continue;
+            }
+            $user = User::find($update['id']);
+            if (!$user) {
+                $results[] = [
+                    'id' => $update['id'],
+                    'status' => 'failed',
+                    'errors' => ['id' => ['User not found.']]
+                ];
+                continue;
+            }
+            $validator = Validator::make($update, [
+                'first_name' => 'sometimes|required',
+                'middle_name' => 'nullable',
+                'last_name' => 'sometimes|required',
+                'user_name' => 'sometimes|required|unique:users,user_name,' . $user->id,
+                'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
+                'password' => 'sometimes|nullable|min:8',
+                'phone_number' => 'nullable',
+                'profile_photo' => 'nullable',
+                'user_type' => 'sometimes|required',
+            ]);
+            if ($validator->fails()) {
+                $results[] = [
+                    'id' => $user->id,
+                    'status' => 'failed',
+                    'errors' => $validator->errors()
+                ];
+                continue;
+            }
+            $validated = $validator->validated();
+            if (isset($validated['password'])) {
+                $validated['password'] = bcrypt($validated['password']);
+            }
+            $user->update($validated);
+            $results[] = [
+                'id' => $user->id,
+                'status' => 'success',
+                'user' => $user
+            ];
+        }
+        return response()->json([
+            'message' => 'Bulk update completed',
+            'results' => $results
+        ], 200);
     }
 
     /**
