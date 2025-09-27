@@ -1,5 +1,5 @@
 ## THE PROJECT  
-Our RESTful API is an Atendance Management System with the following resources : Users, Employees, and Attendance. 
+Our RESTful API is Employee Attendance Recorder with the following resources : Users, Employees, and Attendance. 
 
 ## THE TEAM
 | Name | Role | Contribution |
